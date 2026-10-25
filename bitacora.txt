@@ -1,0 +1,22 @@
+python3 --version
+python3 -m venv venv
+source venv/bin/activate
+source venv/bin/deactivate
+pip install django
+python -m django --version
+django-admin --version
+django-admin startproject taskdir .    #"en el tutorial esta como djangocrud task-tarea"
+python manage.py runserver #no se ejecuto la migracion
+python manage.py startapp tasks
+
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/taskdir/settings.py
+
+ 'tasks',
+
+ /home/paul/Desarrollo/2_proyectos/crud_django_auth/tasks/views.py
+ from django.http import HttpResponse
+     return HttpResponse("Hello, World!")
+
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/taskdir/urls.py
+from tasks.views import views
+    path('', views.helloworld),

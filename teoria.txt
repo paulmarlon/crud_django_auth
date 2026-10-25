@@ -1,0 +1,41 @@
+¿Qué es exactamente una "Aplicación" en Django?
+
+Una aplicación de Django es un módulo autocontenido que realiza una sola tarea o función específica dentro de tu proyecto web. Piensa en tu proyecto como un edificio completo y en las aplicaciones como los cuartos o áreas independientes de ese edificio.
+
+Cada aplicación gestiona sus propios:
+
+    Modelos (models.py): La estructura de los datos en la base de datos.
+
+    Vistas (views.py): La lógica de negocio y respuesta a las peticiones.
+
+    Rutas (urls.py): Las direcciones web que pertenecen solo a ese módulo.
+
+    Plantillas/Templates: Las pantallas HTML de esa función.
+
+Mapeo de tu Proyecto según sus Aplicaciones
+
+En la estructura que propones, lo ideal no es programar todo dentro de una sola carpeta, sino dividir las responsabilidades en pequeñas aplicaciones independientes:
+
+    Aplicación tasks (o todo):
+
+        Propósito: Manejar la administración de tareas del usuario.
+
+        Responsabilidad: Crear, editar, listar, eliminar (CRUD) y marcar tareas como completadas.
+
+    Aplicación blog:
+
+        Propósito: Manejar el contenido editorial.
+
+        Responsabilidad: Artículos, categorías, etiquetas, publicaciones por fecha y comentarios.
+
+    Aplicación pages (o main / core):
+
+        Propósito: Gestionar el contenido estático o institucional del sitio.
+
+        Responsabilidad: La página de inicio (main), la sección sobre nosotros (about), contacto, términos y condiciones.
+
+    Aplicación accounts (o authentication):
+
+        Propósito: Gestión de usuarios (si decides separarla de las tareas).
+
+        Responsabilidad: Registro, inicio de sesión, perfil de usuario y recuperación de contraseña.
