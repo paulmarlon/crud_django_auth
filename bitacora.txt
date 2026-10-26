@@ -20,3 +20,76 @@ python manage.py startapp tasks
 /home/paul/Desarrollo/2_proyectos/crud_django_auth/taskdir/urls.py
 from tasks.views import views
     path('', views.helloworld),
+
+python manage.py runserver
+
+(venv) paul@adhara:~/Desarrollo/2_proyectos/crud_django_auth$ git remote add origin https://github.com/paulmarlon/crud_django_auth.git
+(venv) paul@adhara:~/Desarrollo/2_proyectos/crud_django_auth$ git push -u origin main
+
+
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/tasks/templates/signup.html
+<h1>Signup<h1/>
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/tasks/views.py
+
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/tasks/templates/signup.html
+    <h1>Signup</h1>
+   <form action="/signup/" method="post">
+     {% csrf_token %}
+     {{ form.as_p }}
+     <button type="submit">Sign Up</button>
+   </form>
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/taskdir/urls.py
+
+
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/tasks/models.py
+from django.db import models
+from django.contrib.auth.models import User
+
+
+# Create your models here.
+class Task(models.Model):
+    titl = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    datecompleted = models.DateTimeField(null=True)
+    important = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+python manage.py makemigrations
+python manage.py migrate
+python manage.py shell #ojo como editarlo() exit()
+^C(venv) paul@adhara:~/Desarrollo/2_proyectos/crud_django_auth$ python manage.py createsuperuser
+Nombre de usuario: admin
+Dirección de correo electrónico: admin@adhara.tech
+Password: 123
+Password (again): 
+La contraseña es demasiado corta. Debe contener por lo menos 8 caracteres.
+Esta contraseña es demasiado común.
+Esta contraseña es completamente numérica.
+Bypass password validation and create user anyway? [y/N]: y
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/tasks/admin.py
+from django.contrib import admin
+from .models import Task
+
+
+class TaskAdmin(admin.ModelAdmin):
+    readonly_fields = ("created",)
+
+
+# Register your models here.
+admin.site.register(Task, TaskAdmin)
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/tasks/models.py
+from django.db import models
+from django.contrib.auth.models import User
+
+
+# Create your models here.
+class Task(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    datecompleted = models.DateTimeField(null=True)
+    important = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title + " by " + self.user.username
