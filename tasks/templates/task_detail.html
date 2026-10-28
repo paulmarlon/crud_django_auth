@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Detalle de Tarea - Django App{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-9 col-lg-8">
+        
+        <!-- Tarjeta de Contenido y Edición -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4 p-md-5">
+                
+                <!-- Encabezado con Estado -->
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div>
+                        <span class="text-muted small text-uppercase fw-semibold">Detalle de la Tarea</span>
+                        <h2 class="h4 mb-0 fw-bold text-dark mt-1">{{ task.title }}</h2>
+                    </div>
+                    <div>
+                        {% if task.datecompleted %}
+                            <span class="badge bg-success fs-6 px-3 py-2">Completada</span>
+                        {% elif task.important %}
+                            <span class="badge bg-danger fs-6 px-3 py-2">Importante</span>
+                        {% else %}
+                            <span class="badge bg-secondary fs-6 px-3 py-2">Pendiente</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Formulario de Edición Limpio -->
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        {{ form.as_p }}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <a href="{% url 'tasks' %}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-1">
+                            <i class="bi bi-arrow-left"></i> Volver a la lista
+                        </a>
+                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1 px-4">
+                            <i class="bi bi-save"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Barra Inferior de Acciones Rápidas (Completar / Eliminar) -->
+        <div class="card shadow-sm border-0 bg-light">
+            <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span class="text-muted small">
+                    <i class="bi bi-info-circle me-1"></i> Creada el: {{ task.created|date:'M j Y, H:i' }}
+                </span>
+                
+                <div class="d-flex gap-2">
+                    {% if not task.datecompleted %}
+                    <form action="{% url 'complete_task' task.id %}" method="POST" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-sm d-inline-flex align-items-center gap-1">
+                            <i class="bi bi-check-circle"></i> Marcar Completada
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    <form action="{% url 'delete_task' task.id %}" method="POST" class="d-inline" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta tarea de forma permanente?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,20 +1,37 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h1>Create task</h1>
-    
-    <!-- Bloque para mostrar mensajes en la cabecera -->
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li class="{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+{% block title %}Crear Tarea - Django App{% endblock %}
 
-    <form action="/tasks/create/" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0 my-3">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-4 pb-2 border-bottom">
+                    <i class="bi bi-plus-circle-fill text-primary fs-3 me-2"></i>
+                    <h2 class="h4 mb-0 fw-bold">Crear Tarea</h2>
+                </div>
+
+                <!-- Nota: El bloque de mensajes ya se maneja de forma global en base.html -->
+
+                <form action="{% url 'create_task' %}" method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        {{ form.as_p }}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-2 border-top">
+                        <a href="{% url 'tasks' %}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-1">
+                            <i class="bi bi-arrow-left"></i> Volver
+                        </a>
+                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center gap-1 px-4">
+                            <i class="bi bi-check-lg"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

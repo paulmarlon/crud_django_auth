@@ -1,5 +1,23 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>Home</h1>
-<p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta accusamus eos, tempora minima sunt esse pariatur et earum, dolorum eveniet consequuntur quaerat id omnis voluptates illum nostrum ipsam quasi non facilis distinctio laboriosam atque modi iure. Sit ab delectus facere distinctio dolorem est pariatur quae ipsam sint velit ipsum ipsa sequi cumque exercitationem facilis totam eveniet ea, quibusdam odio voluptatum quidem dolorum animi consequuntur minus? Debitis voluptatem aperiam praesentium recusandae ducimus? Ea, cum error. Cum ad illum, amet exercitationem distinctio eaque similique voluptatum harum sequi voluptatibus eos perspiciatis rem non beatae cumque expedita nulla enim aspernatur error quam autem consequuntur.</p>
-{% endblock %}  
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 text-center">
+        <h1 class="display-4 fw-bold text-primary mb-4">Bienvenido a TaskApp</h1>
+        <p class="lead text-muted mb-4">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Soluta accusamus eos, tempora minima sunt esse pariatur et earum, dolorum eveniet consequuntur quaerat id omnis voluptates illum nostrum ipsam quasi non facilis distinctio laboriosam atque modi iure.
+        </p>
+        
+        {% if not user.is_authenticated %}
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'signin' %}" class="btn btn-primary btn-lg px-4">Iniciar Sesión</a>
+                <a href="{% url 'signup' %}" class="btn btn-outline-secondary btn-lg px-4">Registrarse</a>
+            </div>
+        {% else %}
+            <div>
+                <a href="{% url 'tasks' %}" class="btn btn-success btn-lg px-4">Ir a mis Tareas</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

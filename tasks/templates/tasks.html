@@ -1,17 +1,138 @@
 {% extends "base.html" %}
+
+{% block title %}Lista de Tareas - Django App{% endblock %}
+
 {% block content %}
-<h1>Tareas</h1>
-<ul>
-    {% for task in tasks %}
-    <li>
-    {% if task.important %}
-        <strong>{{ task.title}}</strong>
-    {% else %}
-        {{ task.title}}
-    {% endif %}
-    <p>{{ task.description }}</p>
-    <p>{{ task.user.username }}</p>
-    </li>
-    {% endfor %}
-</ul>
-{% endblock %}  
+<div class="row mb-3 align-items-center">
+    <div class="col">
+        <h1 class="h3 fw-bold mb-0 text-dark">
+            <i class="bi bi-list-task text-primary me-2"></i>Gestión de Tareas
+        </h1>
+        <p class="text-muted small mb-0">Mostrando tus tareas pendientes organizadas por páginas</p>
+    </div>
+    <div class="col-auto">
+        <a href="{% url 'create_task' %}" class="btn btn-primary d-inline-flex align-items-center gap-1">
+            <i class="bi bi-plus-lg"></i> Nueva Tarea
+        </a>
+    </div>
+</div>
+
+<!-- Tabla Compacta para Manejar Grandes Volúmenes -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col" class="ps-3">Estado</th>
+                        <th scope="col">Título</th>
+                        <th scope="col">Descripción</th>
+                        <th scope="col">Fecha de Creación</th>
+                        <th scope="col" class="text-end pe-3">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                        <tr class="{% if task.important %}table-warning{% endif %}">
+                            <!-- Estado -->
+                            <td class="ps-3">
+                                {% if task.important %}
+                                    <span class="badge bg-danger">Importante</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Pendiente</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Título -->
+                            <td class="fw-semibold">
+                                <a href="{% url 'task_detail' task.id %}" class="text-decoration-none text-dark">
+                                    {{ task.title }}
+                                </a>
+                            </td>
+
+                            <!-- Descripción -->
+                            <td class="text-muted text-truncate" style="max-width: 250px;">
+                                {{ task.description|default:"Sin descripción" }}
+                            </td>
+
+                            <!-- Fecha -->
+                            <td class="small text-muted">
+                                {{ task.created|date:'M j Y, H:i' }}
+                            </td>
+
+                            <!-- Acciones -->
+                            <td class="text-end pe-3">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'task_detail' task.id %}" class="btn btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    
+                                    <form action="{% url 'complete_task' task.id %}" method="POST" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-success rounded-0" title="Completar">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+
+                                    <form action="{% url 'delete_task' task.id %}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta tarea?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-danger" title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-3 d-block mb-1"></i>
+                                No hay tareas pendientes registradas.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Controles de Paginación Bootstrap -->
+{% if tasks.has_other_pages %}
+<nav aria-label="Navegación de páginas">
+    <ul class="pagination justify-content-center">
+        {% if tasks.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="Primero">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ tasks.previous_page_number }}" aria-label="Anterior">Anterior</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">&laquo;&laquo;</span></li>
+            <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+        {% endif %}
+
+        <li class="page-item active">
+            <span class="page-link">Página {{ tasks.number }} de {{ tasks.paginator.num_pages }}</span>
+        </li>
+
+        {% if tasks.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ tasks.next_page_number }}" aria-label="Siguiente">Siguiente</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ tasks.paginator.num_pages }}" aria-label="Último">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+            <li class="page-item disabled"><span class="page-link">&raquo;&raquo;</span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
