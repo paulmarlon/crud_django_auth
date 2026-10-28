@@ -93,3 +93,4 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title + " by " + self.user.username
+/home/paul/Desarrollo/2_proyectos/crud_django_auth/tasks/forms.py

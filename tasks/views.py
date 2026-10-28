@@ -11,6 +11,9 @@ from django.contrib import messages
 # (útil si quieres loguearlo automáticamente justo después de registrarse)
 from django.contrib.auth import login, logout, authenticate
 
+from .forms import TaskForm
+from .models import Task
+
 
 # Vista para la página de inicio
 def home(request):
@@ -54,7 +57,8 @@ def signup(request):
 
 
 def tasks(request):
-    return render(request, "tasks.html")
+    tasks = Task.objects.filter(user=request.user, datecompleted__isnull=True)
+    return render(request, "tasks.html", {"tasks": tasks})
 
 
 # Vista para el cierrre de sesion
@@ -89,3 +93,29 @@ def signin(request):
         login(request, user)
         messages.success(request, "¡Bienvenido de nuevo!")
         return redirect("tasks")
+
+
+def create_task(request):
+    if request.method == "GET":
+        # Pasamos una instancia vacía del formulario
+        return render(request, "create_task.html", {"form": TaskForm()})
+    else:
+        # 1. Recibimos los datos del POST en el formulario
+        form = TaskForm(request.POST)
+
+        # 2. Validamos el formulario
+        if form.is_valid():
+            # Creamos la tarea pero sin guardarla aún en la base de datos (commit=False)
+            new_task = form.save(commit=False)
+
+            # Asignamos la tarea al usuario que ha iniciado sesión
+            new_task.user = request.user
+
+            # Ahora sí la guardamos definitivamente
+            new_task.save()
+
+            messages.success(request, "¡Tarea creada exitosamente!")
+            return redirect("tasks")
+        else:
+            messages.error(request, "Por favor, corrige los errores en el formulario.")
+            return render(request, "create_task.html", {"form": form})
